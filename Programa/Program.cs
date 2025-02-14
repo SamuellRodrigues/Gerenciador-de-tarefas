@@ -1,94 +1,57 @@
-﻿
+﻿using System;
+using GerenciarTarefa;
+using Layout;
+
 class Program
 {
-    static List<Tarefa> tarefas = new List<Tarefa>();
-    
+    static void ImprimirCabecalho()
+    {
+        Formatacao.Cor("============================", ConsoleColor.Cyan);
+        Formatacao.Cor("   GERENCIADOR DE TAREFAS   ", ConsoleColor.Cyan);
+        Formatacao.Cor("============================", ConsoleColor.Cyan);
+    }
+
     static void Main()
     {
-        int opcao;
-        do
+        ImprimirCabecalho();
+
+        while (true)
         {
-            Console.Clear();
-            Console.WriteLine("GERENCIADOR DE TAREFAS\n");
-            Console.WriteLine("1 - Adicionar Tarefa");
+            Console.WriteLine("\n1 - Adicionar Tarefa");
             Console.WriteLine("2 - Listar Tarefas");
             Console.WriteLine("3 - Concluir Tarefa");
             Console.WriteLine("4 - Remover Tarefa");
             Console.WriteLine("0 - Sair");
-            Console.Write("Escolha uma opção: ");
-            
-            if (!int.TryParse(Console.ReadLine(), out opcao))
-                continue;
-            
+            Console.Write("\nEscolha uma opção: ");
+            string opcao = Console.ReadLine();
+
             switch (opcao)
             {
-                case 1:
-                    AdicionarTarefa();
+                case "1":
+                    Console.Write("Digite a descrição da tarefa: ");
+                    string descricao = Console.ReadLine();
+                    Gerenciador.AdicionarTarefa(descricao);
                     break;
-                case 2:
-                    ListarTarefas();
+                case "2":
+                    Gerenciador.ListarTarefas();
                     break;
-                case 3:
-                    ConcluirTarefa();
+                case "3":
+                    Console.Write("Digite o ID da tarefa concluída: ");
+                    int idConcluir = int.Parse(Console.ReadLine());
+                    Gerenciador.ConcluirTarefa(idConcluir);
                     break;
-                case 4:
-                    RemoverTarefa();
+                case "4":
+                    Console.Write("Digite o ID da tarefa a ser removida: ");
+                    int idRemover = int.Parse(Console.ReadLine());
+                    Gerenciador.RemoverTarefa(idRemover);
+                    break;
+                case "0":
+                    return;
+                default:
+                    Formatacao.Cor("Opção inválida!", ConsoleColor.Red);
                     break;
             }
-        } while (opcao != 0);
-    }
-    
-    static void AdicionarTarefa()
-    {
-        Console.Write("Digite a descrição da tarefa: ");
-        string descricao = Console.ReadLine();
-        tarefas.Add(new Tarefa { Id = tarefas.Count + 1, Descricao = descricao, Concluida = false });
-        Console.WriteLine("Tarefa adicionada com sucesso!");
-        Console.ReadKey();
-    }
-    
-    static void ListarTarefas()
-    {
-        Console.WriteLine("\nTarefas:");
-        foreach (var tarefa in tarefas)
-        {
-            Console.WriteLine($"[{(tarefa.Concluida ? "X" : " ")}] ID: {tarefa.Id} - {tarefa.Descricao}");
         }
-        Console.ReadKey();
-    }
-    
-    static void ConcluirTarefa()
-    {
-        Console.Write("Digite o ID da tarefa a concluir: ");
-        if (int.TryParse(Console.ReadLine(), out int id))
-        {
-            var tarefa = tarefas.Find(t => t.Id == id);
-            if (tarefa != null)
-            {
-                tarefa.Concluida = true;
-                Console.WriteLine("Tarefa concluída com sucesso!");
-            }
-            else
-                Console.WriteLine("Tarefa não encontrada.");
-        }
-        Console.ReadKey();
-    }
-    
-    static void RemoverTarefa()
-    {
-        Console.Write("Digite o ID da tarefa a remover: ");
-        if (int.TryParse(Console.ReadLine(), out int id))
-        {
-            tarefas.RemoveAll(t => t.Id == id);
-            Console.WriteLine("Tarefa removida com sucesso!");
-        }
-        Console.ReadKey();
     }
 }
 
-class Tarefa
-{
-    public int Id { get; set; }
-    public string Descricao { get; set; }
-    public bool Concluida { get; set; }
-}
